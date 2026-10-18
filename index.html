@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Factory to Market Live</title>
+<meta name="description" content="Live session for the HCT Industry–Academia Supply Chain Masterclass">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: inspection-file aesthetic on Cotecna blue. Screen = 16:9 stage + footer rail; phone = single column of tag cards. */
+:root{
+  --deep:#04063f; --navy:#000087; --panel:#0c1170; --panel2:#11178a;
+  --line:rgba(114,189,236,.24); --ink:#f3f5ff; --muted:#aab2e6;
+  --sky:#72BDEC; --green:#00BA80; --orange:#ED884F; --red:#ff6473; --paper:#f5f3ea; --paper-ink:#151a52;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--deep);color:var(--ink);font:16px/1.45 var(--body);-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.mono{font-family:var(--mono)}
+.disp{font-family:var(--display);font-stretch:88%;letter-spacing:-.01em}
+.eyebrow{font:600 .78em/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sky)}
+.grid-bg{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;background-position:-1px -1px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- SCREEN ---------- */
+#screen{height:100%;display:grid;grid-template-rows:1fr auto;overflow:hidden;font-size:clamp(12px,1.12vw,22px);position:relative}
+#screen::before{content:"";position:absolute;inset:0;opacity:.35;pointer-events:none}
+.stage{position:relative;padding:3.2em 4em 2em;display:flex;flex-direction:column;gap:1.4em;min-height:0;overflow:hidden}
+.s-head{display:flex;flex-direction:column;gap:.7em}
+.s-title{font:800 3.6em/1.02 var(--display);font-stretch:85%;margin:0;text-wrap:balance;max-width:24ch}
+.s-title.xl{font-size:5.2em}
+.s-sub{font-size:1.35em;color:var(--muted);margin:0;max-width:60ch}
+.rail{display:flex;align-items:center;gap:1.5em;padding:.8em 4em;border-top:1px solid var(--line);background:rgba(0,0,0,.18);font-size:.95em}
+.rail .brand{font:700 1em var(--display);font-stretch:95%;letter-spacing:.02em;white-space:nowrap}
+.rail .brand b{color:var(--green)}
+.dots{display:flex;gap:4px;flex:1;justify-content:center;flex-wrap:wrap}
+.dots i{width:10px;height:4px;border-radius:2px;background:rgba(255,255,255,.18)}
+.dots i.on{background:var(--green)}
+.dots i.now{background:var(--orange);width:22px}
+.joinmini{display:flex;align-items:center;gap:.8em;white-space:nowrap}
+.joinmini .qr{width:3.4em;height:3.4em;background:#fff;padding:3px;border-radius:4px}
+.joinmini .qr img,.joinmini .qr canvas{width:100%!important;height:100%!important}
+.count{font:600 1.6em/1 var(--mono)}
+.timer{position:absolute;top:1.6em;right:2em;display:flex;align-items:center;gap:.6em;font:700 2.4em/1 var(--mono)}
+.timer .ring{width:1.4em;height:1.4em}
+.timer.low{color:var(--orange)}
+.stamp{display:inline-block;font:900 1.2em/1 var(--display);font-stretch:110%;letter-spacing:.12em;text-transform:uppercase;padding:.35em .7em;border:4px solid currentColor;border-radius:6px;transform:rotate(-6deg);opacity:.92}
+.stamp.pass{color:var(--green)} .stamp.hold{color:var(--red)} .stamp.esc{color:var(--orange)}
+@keyframes thud{0%{transform:rotate(-6deg) scale(2.4);opacity:0}70%{transform:rotate(-6deg) scale(.95);opacity:1}100%{transform:rotate(-6deg) scale(1)}}
+.stamp.anim{animation:thud .45s ease-out both}
+
+/* lobby */
+.lobby{display:grid;grid-template-columns:1.25fr 1fr;gap:3em;align-items:center;flex:1;min-height:0}
+.bigqr{background:#fff;padding:1em;border-radius:12px;width:min(22em,100%);aspect-ratio:1;justify-self:center}
+.bigqr img,.bigqr canvas{width:100%!important;height:100%!important}
+.joinurl{font:600 1.05em var(--mono);color:var(--sky);text-align:center;word-break:break-all;margin-top:.8em}
+.names{display:flex;flex-wrap:wrap;gap:.45em;max-height:9em;overflow:hidden}
+.name{padding:.3em .7em;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);font-size:.95em}
+.name:first-child{border-color:var(--green);color:var(--green)}
+.campus-pair{display:flex;gap:2.4em}
+.campus-pair div{display:flex;flex-direction:column}
+.campus-pair b{font:800 3em/1 var(--display)}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:.8em;max-width:62em}
+.bar{display:grid;grid-template-columns:3.2em 1fr 5em;align-items:center;gap:1em}
+.bar .key{width:2.4em;height:2.4em;border-radius:8px;display:grid;place-items:center;font:800 1.3em var(--display);background:var(--panel2);border:1px solid var(--line)}
+.bar .track{position:relative;height:3.1em;border-radius:8px;background:rgba(255,255,255,.05);overflow:hidden;border:1px solid var(--line)}
+.bar .fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,rgba(114,189,236,.55),rgba(114,189,236,.25));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.bar .lbl{position:relative;padding:0 1em;line-height:3.1em;font-size:1.25em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .n{font:600 1.3em var(--mono);text-align:right}
+.bar.correct .fill{background:linear-gradient(90deg,rgba(0,186,128,.85),rgba(0,186,128,.4))}
+.bar.correct .key{background:var(--green);color:#022;border-color:var(--green)}
+.bar.dim{opacity:.45}
+.bar .split{position:absolute;inset:0 auto 0 0;background:rgba(237,136,79,.75);transition:width .6s}
+.answered-count{font:600 1.1em var(--mono);color:var(--muted)}
+.explain{display:flex;gap:1.2em;align-items:flex-start;background:var(--paper);color:var(--paper-ink);padding:1.1em 1.4em;border-radius:10px;max-width:62em;font-size:1.2em}
+.explain .stamp{flex:none}
+
+/* slides */
+.cols{display:grid;gap:1.4em;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.3em 1.4em;display:flex;flex-direction:column;gap:.6em;min-width:0}
+.card h3{margin:0;font:800 1.8em/1.05 var(--display);font-stretch:90%}
+.card p{margin:0;color:var(--muted);font-size:1.08em}
+.card .tag{align-self:flex-start}
+.tag{font:600 .8em var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.3em .6em;border-radius:4px;background:rgba(114,189,236,.14);color:var(--sky)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:.25em 1em;font-size:1.02em}
+.kv dt{color:var(--sky);font:600 .85em var(--mono);text-transform:uppercase;letter-spacing:.08em;padding-top:.2em}
+.kv dd{margin:0}
+.lane{display:grid;grid-template-columns:9em 1fr;align-items:center;gap:1.2em}
+.lane h4{margin:0;font:800 1.4em var(--display);font-stretch:90%}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:.4em}
+.chain span{padding:.45em .8em;border-radius:6px;background:var(--panel);border:1px solid var(--line);font-size:1.05em}
+.chain i{color:var(--sky);font-style:normal}
+.keymsg{font:800 2em/1.15 var(--display);font-stretch:90%;max-width:34ch;border-left:6px solid var(--green);padding-left:.7em;margin:0}
+.steps{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:.5em;counter-reset:s}
+.step{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.9em .7em;font-size:1em;min-height:8.5em;display:flex;flex-direction:column;gap:.5em}
+.step b{font:600 .8em var(--mono);color:var(--sky)}
+.step small{color:var(--muted);font-size:.85em}
+.chips{display:flex;flex-wrap:wrap;gap:.5em}
+.chips span{padding:.4em .8em;border-radius:999px;border:1px solid rgba(237,136,79,.6);color:#ffd1b6;font-size:1.05em}
+.ladder{display:flex;align-items:flex-end;gap:.8em;height:15em;max-width:58em}
+.ladder div{flex:1;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--orange),rgba(237,136,79,.25));display:flex;flex-direction:column;justify-content:flex-end;padding:.6em;font-size:1em;font-weight:600;min-width:0}
+.ladder div:first-child{background:linear-gradient(180deg,var(--green),rgba(0,186,128,.25))}
+.ladder small{display:block;font-weight:400;opacity:.85;font-size:.85em}
+
+/* case file */
+.casefile{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6em;min-height:0}
+.doc{background:var(--paper);color:var(--paper-ink);border-radius:10px;padding:1.4em 1.6em;font-size:1.12em;position:relative;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.doc h3{margin:0 0 .6em;font:800 1.5em var(--display);font-stretch:90%}
+.doc table{width:100%;border-collapse:collapse;font-size:.98em}
+.doc td{padding:.42em .2em;border-bottom:1px dashed rgba(21,26,82,.25);vertical-align:top}
+.doc td:first-child{font:600 .78em var(--mono);text-transform:uppercase;letter-spacing:.06em;color:#4a5190;width:11em;padding-top:.6em}
+.doc .flag{background:#ffe0cf;padding:0 .3em;border-radius:3px}
+.doc .clip{position:absolute;top:-.6em;right:1.4em;background:var(--orange);color:#2b1205;font:700 .8em var(--mono);padding:.3em .6em;border-radius:3px;letter-spacing:.08em}
+.teams5{display:grid;gap:.6em}
+.teamrow{display:grid;grid-template-columns:.6em 1fr auto;gap:.8em;align-items:center;padding:.7em .9em;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
+.teamrow .sw{width:.6em;height:100%;min-height:2.2em;border-radius:3px}
+.teamrow b{font:800 1.25em var(--display);font-stretch:90%}
+.teamrow small{display:block;color:var(--muted);font-size:.92em}
+.twist{background:var(--orange);color:#2b1205;border-radius:12px;padding:1.2em 1.6em;font-size:1.5em;font-weight:600;max-width:46em}
+.twist .eyebrow{color:#2b1205}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2em}
+.plans{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.8em;min-height:0;overflow:hidden}
+.plan{background:var(--panel);border-radius:10px;border-top:5px solid var(--c);padding:.8em;display:flex;flex-direction:column;gap:.6em;min-width:0;font-size:.92em;overflow:hidden}
+.plan h4{margin:0;font:800 1.2em var(--display)}
+.plan q{display:block;quotes:none;color:var(--ink);border-left:2px solid var(--line);padding-left:.6em}
+.plan q small{display:block;color:var(--muted);font-size:.85em}
+.framework{display:flex;gap:.5em;flex-wrap:wrap}
+.framework span{padding:.5em .8em;border-radius:6px;background:rgba(0,186,128,.15);border:1px solid rgba(0,186,128,.5);font-size:1.02em}
+.framework b{font-family:var(--mono);color:var(--green);margin-right:.35em}
+
+/* board / podium */
+.board{display:grid;grid-template-columns:1.2fr 1fr;gap:2.4em;flex:1;min-height:0}
+.lead{display:grid;grid-template-columns:2.2em 1fr auto;gap:.8em;align-items:center;padding:.55em .8em;border-bottom:1px solid var(--line);font-size:1.15em}
+.lead .r{font:700 1em var(--mono);color:var(--muted)}
+.lead .p{font:600 1.05em var(--mono)}
+.lead .who small{color:var(--muted);margin-left:.5em;font-size:.82em}
+.lead:first-child .r{color:#ffd166}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:1em;height:16em}
+.podium div{width:9em;border-radius:10px 10px 0 0;background:var(--panel2);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.8em .4em;text-align:center;gap:.3em}
+.podium b{font:800 1.3em var(--display);font-stretch:90%;word-break:break-word}
+.podium .pl{font:900 2.4em var(--display)}
+.connect{display:grid;grid-template-columns:auto 1fr;gap:1.6em;align-items:center;background:var(--paper);color:var(--paper-ink);border-radius:14px;padding:1.2em 1.4em}
+.connect .qr{width:10em;height:10em;background:#fff}
+.connect .qr img,.connect .qr canvas{width:100%!important;height:100%!important}
+.connect h3{margin:0 0 .3em;font:800 1.9em/1.05 var(--display);font-stretch:88%}
+.connect p{margin:0;font-size:1.1em}
+
+/* cloud */
+.cloud{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4em 1.1em;flex:1;align-content:center;max-width:70em;margin:0 auto}
+.cloud span{font-family:var(--display);font-stretch:85%;font-weight:800;line-height:1;transition:font-size .5s}
+/* questions */
+.qwall{display:flex;flex-direction:column;gap:.7em;max-width:66em}
+.qitem{display:grid;grid-template-columns:4em 1fr;gap:1em;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.8em 1em;font-size:1.25em}
+.qitem .v{font:700 1.4em var(--mono);color:var(--green);text-align:center}
+.qitem small{display:block;color:var(--muted);font-size:.75em}
+.qitem.done{opacity:.45}
+
+/* presenter controls on screen */
+.ctrl{position:absolute;left:50%;bottom:4.6em;transform:translateX(-50%);display:flex;gap:.4em;padding:.4em;border-radius:10px;background:rgba(0,0,0,.55);border:1px solid var(--line);opacity:0;transition:opacity .3s;font-size:.9em;z-index:5}
+#screen:hover .ctrl,.ctrl:focus-within{opacity:1}
+.ctrl button{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:.4em .8em}
+.modal{position:fixed;inset:0;background:rgba(2,3,30,.8);display:grid;place-items:center;z-index:20;padding:16px}
+.modal form{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.4em;display:flex;flex-direction:column;gap:.8em;width:min(360px,100%)}
+.modal input{padding:.7em .8em;border-radius:8px;border:1px solid var(--line);background:var(--deep);font:600 1.2em var(--mono);letter-spacing:.2em;text-transform:uppercase}
+
+/* ---------- PHONE ---------- */
+#phone{min-height:100%;display:flex;flex-direction:column;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 96px;max-width:560px;margin:0 auto;gap:14px}
+.ph-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ph-top .brand{font:800 15px var(--display);font-stretch:95%}
+.ph-top .brand b{color:var(--green)}
+.score-pill{font:600 13px var(--mono);padding:6px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);white-space:nowrap}
+.tagcard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.tagcard.paper{background:var(--paper);color:var(--paper-ink);border-color:transparent}
+.tagcard h1,.tagcard h2{margin:0;font:800 26px/1.08 var(--display);font-stretch:88%;text-wrap:balance}
+.tagcard h2{font-size:22px}
+.tagcard p{margin:0;color:var(--muted)}
+.tagcard.paper p{color:#3d4387}
+.hole{position:absolute;top:14px;right:14px;width:14px;height:14px;border-radius:50%;background:var(--deep);border:2px solid var(--line)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font:600 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sky)}
+.field input,.field textarea{padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--deep);font-size:17px}
+.field textarea{min-height:84px;resize:vertical}
+.seg{display:grid;grid-template-columns:repeat(var(--n,2),1fr);gap:8px}
+.seg button{padding:12px 8px;border-radius:10px;border:1px solid var(--line);background:var(--deep);font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--sky);color:#031034;border-color:var(--sky)}
+.btn{padding:15px 18px;border-radius:12px;border:0;background:var(--green);color:#03231a;font:800 18px var(--display);font-stretch:95%;letter-spacing:.01em}
+.btn:disabled{opacity:.45}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);font-weight:700}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:center;text-align:left;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);font-size:16px;font-weight:500;min-height:64px}
+.opt .k{width:42px;height:42px;border-radius:9px;display:grid;place-items:center;font:800 18px var(--display);background:var(--deep)}
+.opt[aria-pressed="true"]{border-color:var(--sky);background:#1b2aa8}
+.opt.correct{border-color:var(--green);background:rgba(0,186,128,.22)}
+.opt.wrong{border-color:var(--red);background:rgba(255,100,115,.15)}
+.opt:disabled{cursor:default}
+.tbar{height:8px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--sky);width:100%}
+.result{display:flex;align-items:center;gap:14px}
+.result .pts{font:800 34px var(--display)}
+.badge{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:14px;border-radius:12px;border:2px dashed var(--c,var(--sky))}
+.badge .id{font:600 12px var(--mono);color:var(--muted);letter-spacing:.08em}
+.badge b{font:800 22px var(--display);font-stretch:90%}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,var(--deep) 35%)}
+.dock button{max-width:528px;width:100%}
+.sheet{position:fixed;inset:0;background:rgba(2,3,30,.86);z-index:10;display:flex;flex-direction:column;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:auto}
+.sheet .inner{max-width:560px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:12px}
+.qrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
+.qrow small{display:block;color:var(--muted)}
+.qrow button{min-width:58px;padding:8px;border-radius:9px;border:1px solid var(--line);background:var(--deep);font:600 14px var(--mono)}
+.qrow button[aria-pressed="true"]{border-color:var(--green);color:var(--green)}
+.roles{display:flex;flex-wrap:wrap;gap:6px}
+.roles span{padding:6px 10px;border-radius:999px;background:var(--deep);border:1px solid var(--line);font-size:14px}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:var(--deep);padding:10px 16px;border-radius:999px;font-weight:600;z-index:30;max-width:calc(100% - 32px)}
+
+/* ---------- CONSOLE ---------- */
+#console{max-width:760px;margin:0 auto;padding-block:14px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.c-now{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.c-now h2{margin:0;font:800 24px/1.1 var(--display);font-stretch:90%}
+.c-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.c-btns button{padding:16px 6px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);font:700 16px var(--display)}
+.c-btns .next{background:var(--green);color:#03231a;border-color:var(--green)}
+.notes{background:var(--paper);color:var(--paper-ink);border-radius:12px;padding:14px 16px;font-size:16px;line-height:1.5}
+.notes ul{margin:.3em 0 0;padding-left:1.2em}
+.stagelist{display:flex;flex-direction:column;gap:4px}
+.stagelist button{display:grid;grid-template-columns:52px 1fr auto;gap:10px;text-align:left;padding:9px 10px;border-radius:8px;border:1px solid transparent;background:transparent;font-size:14px}
+.stagelist button.now{border-color:var(--orange);background:rgba(237,136,79,.12)}
+.stagelist .t{font:600 13px var(--mono);color:var(--sky)}
+.stagelist .k{font:12px var(--mono);color:var(--muted)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+summary{font-weight:700;cursor:pointer}
+.small{font-size:13px;color:var(--muted)}
+.danger{background:var(--red)!important;color:#2a0008!important;border-color:var(--red)!important}
+
+@media (max-width:700px){
+  #screen{font-size:9px}
+  .stage{padding:2.2em 1.6em 1.6em}
+  .rail{padding:.8em 1.6em}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* =====================================================================
+   EDIT HERE — speaker details shown on the "About me" and closing slides
+   ===================================================================== */
+const CONFIG = {
+  supabaseUrl: "https://tkneahahlreyhotzazsx.supabase.co",
+  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrbmVhaGFobHJleWhvdHphenN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzMDk0ODYsImV4cCI6MjEwNzg4NTQ4Nn0.u6cVErUF8FQLb3VWpIY0JRqEBjwY-kcljhiWXIR6R8o",
+  speaker: {
+    name: "Kamlesh Parmar",
+    short: "KP",
+    title: "Regional Director – Middle East, Cotecna",
+    linkedin: "https://www.linkedin.com/in/REPLACE-WITH-YOUR-PROFILE",
+    facts: [
+      ["Leads", "Cotecna operations across the UAE, Saudi Arabia, Bahrain and Oman"],
+      ["Global role", "Heads Cotecna's worldwide Fertilizers product team"],
+      ["Sits on", "The global Metals & Minerals steering committee"],
+      ["Started in", "Marketing, not engineering. TIC taught me the rest."]
+    ],
+    lessons: [
+      ["Learn the process before the job title.", "Walk the warehouse, read the test report, sit with customs. Understanding the whole chain is what gets you promoted."],
+      ["Your signature is your reputation.", "In TIC, the moment you sign a report you are vouching for it. Integrity is the career skill."],
+      ["Volunteer for the messy problem.", "The shipment that is stuck teaches you more in a week than a smooth one does in a year."]
+    ],
+    closingLine: "Scan to connect on LinkedIn. Send me your one takeaway from today with the note \"HCT Masterclass\". I'm glad to stay in touch as you start your career."
+  },
+  event: "Industry–Academia Supply Chain Masterclass",
+  host: "Higher Colleges of Technology"
+};
+
+/* ===================================================================== */
+const TEAMS = {
+  1:{name:"Importers", color:"#72BDEC", role:"Importer & commercial team", goal:"Protect the launch date and the retailer relationship."},
+  2:{name:"Makers", color:"#ED884F", role:"Manufacturer & exporter", goal:"Show the product is compliant and avoid re-testing if you can."},
+  3:{name:"TIC Lab", color:"#00BA80", role:"Testing & certification body", goal:"Make an impartial decision, based only on evidence."},
+  4:{name:"Regulators", color:"#ff8fa0", role:"Regulator & customs", goal:"Protect consumers. The evidence must match the product on the shelf."},
+  5:{name:"Recovery", color:"#c7a6ff", role:"Supply-chain recovery squad", goal:"Build the fastest plan that stays compliant."}
+};
+const TIC_OPTS = [{id:"test",k:"T",label:"Testing"},{id:"inspect",k:"I",label:"Inspection"},{id:"certify",k:"C",label:"Certification"}];
+const DECISION_OPTS = [{id:"release",k:"R",label:"Release the shipment"},{id:"hold",k:"H",label:"Hold the shipment"},{id:"escalate",k:"E",label:"Escalate the decision"}];
+const CAREER = {
+  field:{label:"Being out in the field", roles:["Inspector","Inspection coordinator","Commodities surveyor"]},
+  analysis:{label:"Digging into technical detail", roles:["Laboratory analyst","Technical reviewer","Conformity engineer"]},
+  customer:{label:"Working with customers", roles:["Key-account coordinator","Business development","Client service lead"]},
+  data:{label:"Systems, data and dashboards", roles:["Business / data analyst","Digital workflow specialist","Supply-chain coordinator"]},
+  quality:{label:"Rules, quality and standards", roles:["Quality officer","Certification coordinator","Regulatory-affairs officer"]}
+};
+const quizQ = (key, time, n, text, ans, why) => ({key, kind:"quiz", time, eyebrow:`Rapid fire · ${n} of 5`, title:text, q:"Test, inspect or certify?", options:TIC_OPTS, correct:ans, duration:20, explain:why,
+  notes:["Timer starts automatically. Answers lock when it ends, then the answer reveals itself.", "Faster correct answers earn more points (500–1,000)."]});
+
+const STAGES = [
+  {key:"welcome", kind:"lobby", time:"10:00", eyebrow:"Industry–Academia Masterclass", title:"From Factory to Market",
+    sub:"Inside UAE supply chains: testing, inspection, certification and real-world problem solving",
+    notes:["Greet both campuses by name: Sharjah and Abu Dhabi.", "Ask everyone to scan the QR code and join. Faculty too, they get their own vote later.", "Say: 'Your phone is your ticket today. Points, teams and a winner at the end.'", "Move on when the count stops rising (about 3 minutes)."]},
+  {key:"cloud", kind:"cloud", time:"10:04", eyebrow:"Warm-up", title:"One word: what does \"supply chain\" mean to you?",
+    phone:"Type one word. Watch it appear on the screen.",
+    notes:["Read out the biggest words. Expect 'logistics', 'shipping', 'trucks'.", "Bridge: 'Almost nobody wrote trust or evidence. By 11:30 I hope you will.'"]},
+  {key:"enter", kind:"quiz", time:"10:07", eyebrow:"First points of the day", title:"Which of these can reach a UAE shop shelf with no testing, inspection or certification at all?",
+    options:[{id:"kettle",k:"A",label:"An electric kettle"},{id:"toy",k:"B",label:"A child's toy"},{id:"cosmetic",k:"C",label:"A face cream"},{id:"rice",k:"D",label:"A bag of rice"},{id:"none",k:"E",label:"None of them"}],
+    correct:"none", duration:25,
+    explain:"Every one of them passes through some form of conformity assessment or food-safety control before it is sold. You just never see it.",
+    notes:["Opening line: 'When we buy a product we see the final item. We don't see the network of labs, inspectors, certifiers, regulators and supply-chain people behind it.'", "After the reveal: 'Today I'll take you behind that product, and show you where trust is created and where it breaks.'"]},
+  {key:"me", kind:"slide", time:"10:10", eyebrow:"Who's talking", title:"Hi, I'm KP",
+    phone:"Three lessons are on the screen. Which one do you need most? Keep it in mind for the end.",
+    notes:["Keep this to 3 minutes. One sentence per fact.", "Tell the marketing-to-TIC story briefly. It reassures students who aren't sure about their path.", "Spend the time on the three lessons. This is where you set yourself up as a mentor.", "Edit the facts and lessons in the CONFIG block at the top of the file."]},
+  {key:"flows", kind:"slide", time:"10:14", eyebrow:"Big idea #1", title:"A supply chain is three flows, not one",
+    phone:"Products move physically. Supply chains succeed or fail on information and decisions.",
+    notes:["Point at each lane in turn.", "Key line: 'The cargo is usually fine. What breaks is the paperwork or the decision.'", "Ask the faculty: how much of our curriculum teaches lane 2 and lane 3?"]},
+  {key:"tic", kind:"slide", time:"10:17", eyebrow:"Big idea #2", title:"Testing, inspection, certification",
+    phone:"Get ready. Rapid-fire round next: 5 questions, 20 seconds each, faster answers score more.",
+    notes:["Explain each column with a 10-second example from your work.", "Land the independence point: commercial pressure must never change a technical conclusion.", "Then: 'Let's see if you were listening. Five questions, 20 seconds each.'"]},
+  quizQ("q1","10:21",1,"Measuring the lead content of a child's toy","test","A laboratory measures a property of the product. That is testing, done by labs accredited to ISO/IEC 17025."),
+  quizQ("q2","10:22",2,"Checking the seal numbers on a container before it is loaded","inspect","Examining a shipment or condition against requirements is inspection, done by bodies accredited to ISO/IEC 17020."),
+  quizQ("q3","10:24",3,"Confirming a kettle model meets the UAE regulation and issuing a conformity certificate","certify","A formal attestation that requirements are met, based on evidence, is certification (ISO/IEC 17065)."),
+  quizQ("q4","10:25",4,"Verifying carton labels, markings and quantities at the warehouse","inspect","Visual checks of labels, markings, packing and quantity are classic inspection work."),
+  quizQ("q5","10:27",5,"Measuring the moisture content of a fertilizer sample in the lab","test","Moisture is a measured property, so it is testing. Fertilizer happens to be the product line I lead globally."),
+  {key:"board1", kind:"board", time:"10:29", eyebrow:"Half-time", title:"Scoreboard",
+    phone:"Check your rank at the top of this screen.",
+    notes:["Celebrate the top 3 by name.", "Point out the team race and the campus battle, Sharjah vs Abu Dhabi.", "Teams matter in 15 minutes, so tell them to remember their team."]},
+  {key:"ecosystem", kind:"slide", time:"10:31", eyebrow:"The UAE & GCC system", title:"Who sits around the table?",
+    phone:"Twelve players, three groups: trade, assurance and authority. Most graduates only meet the first group.",
+    notes:["Walk the three groups. Ask: which of these could you work for after graduating? (All of them.)", "UAE: MoIAT sets technical regulations and grants national conformity marks such as the Emirates Quality Mark.", "GCC: the same product can face different routes, for example SABER in Saudi Arabia.", "Faculty point: teach compliance as an upstream design requirement, not a customs document at the end."]},
+  {key:"journey", kind:"slide", time:"10:36", eyebrow:"End to end", title:"Every product has two journeys: the cargo and the evidence",
+    phone:"What happens if the product arrives before its evidence? Storage, re-testing, delays and an unhappy customer.",
+    notes:["Trace the kettle through the nine steps.", "Ask: 'What happens if the product arrives before the evidence?' Take 2–3 answers out loud, then show the chips.", "These are possible consequences, not things that happen every time."]},
+  {key:"cheapest", kind:"quiz", time:"10:39", eyebrow:"Quick round", title:"Where is a non-conformity cheapest to fix?",
+    options:[{id:"design",k:"A",label:"At product design"},{id:"factory",k:"B",label:"In the factory"},{id:"preship",k:"C",label:"Before shipment"},{id:"port",k:"D",label:"At the port of arrival"},{id:"shelf",k:"E",label:"On the shop shelf"}],
+    correct:"design", duration:20,
+    explain:"The earlier conformity is designed into the supply chain, the cheaper the correction. On the shelf it becomes a recall and a reputation problem.",
+    notes:["After reveal, the ladder appears. 'Each step to the right multiplies cost and embarrassment.'"]},
+  {key:"case", kind:"case", time:"10:42", eyebrow:"Live case · Case file KT-200A", title:"The kettle problem",
+    phone:"You've been assigned a role. Read your team's objective. You'll argue from this point of view.",
+    notes:["Read the case file slowly. Make the tension clear: urgency vs evidence.", "Tell everyone to look at their phone: they've each been given a role in one of five teams.", "Remote tip: teams discuss in the campus room, and each person submits their own view on the phone."]},
+  {key:"gut", kind:"poll", time:"10:45", eyebrow:"Gut call · 60 seconds", title:"Right now, what do you do with the 5,000 kettles?",
+    options:DECISION_OPTS,
+    explain:"Hold that thought. New information just arrived.",
+    notes:["Don't comment on the result yet. Just read the split out loud.", "Then: 'Plot twist.' Next slide."]},
+  {key:"twist", kind:"twist", time:"10:47", eyebrow:"Plot twist", title:"The factory has just confirmed something",
+    twist:"KT-200A uses a different heating-element supplier and is rated 2,200 W. KT-200 was tested at 2,000 W.",
+    options:DECISION_OPTS,
+    explain:"A different component and a higher power rating can affect safety performance, so the existing report doesn't cover KT-200A. The evidence has to catch up with the product: hold, and escalate so the launch team can plan.",
+    notes:["Vote again with the new fact.", "On reveal, compare before and after. 'Notice how one fact changed the decision. That's the job.'"]},
+  {key:"case_team", kind:"team", time:"10:49", eyebrow:"Team huddle · 8 minutes", title:"Make the call from your team's seat",
+    questions:["What is the immediate risk?","What information is missing?","Release, hold or escalate?","Next action, owner and deadline?"],
+    notes:["Timer starts automatically (8 minutes). In each room, teams huddle by role.", "Walk the room virtually: call on a Regulator and an Importer to hear the tension.", "Each person submits a plan on their phone for 300 points."]},
+  {key:"debrief", kind:"debrief", time:"10:59", eyebrow:"Debrief", title:"What each seat saw", activity:"case_team",
+    phone:"Look for your team's plan on the screen.",
+    notes:["Read one plan per team. Ask: 'What did your role make you overlook?'", "Walk the 5-step framework.", "Close with: 'The best answer isn't the fastest release or the strictest rejection. It's the fastest decision that stays technically justified, traceable and compliant.'"]},
+  {key:"disrupt", kind:"quiz", time:"11:04", eyebrow:"Real world · from my desk", title:"A vessel's berthing moves up 18 hours. Your inspector is due at a port where site access is now uncertain. First move?",
+    options:[{id:"safety",k:"A",label:"Confirm the team can reach the site safely"},{id:"continue",k:"B",label:"Send the inspector as planned"},{id:"reschedule",k:"C",label:"Reschedule and tell the customer later"},{id:"escalate",k:"D",label:"Escalate and wait for instructions"}],
+    correct:"safety", duration:25,
+    explain:"People first, then evidence. Confirm safe access, agree the revised inspection point with the customer, and record every deviation.",
+    notes:["Set up your real (anonymised) case before the vote. No client names, prices or volumes."]},
+  {key:"story", kind:"slide", time:"11:06", eyebrow:"How we handled it", title:"Resilience is a protocol, not improvisation",
+    phone:"Situation → Complication → Response → Learning. You can use this structure in any interview answer.",
+    notes:["Tell your real story in the SCR shape (3 minutes).", "Tip for students: 'Use this exact structure when an interviewer asks about a problem you solved.'"]},
+  {key:"skills", kind:"poll", time:"11:09", eyebrow:"What industry needs from you", title:"What do employers value most in a new graduate?",
+    options:[{id:"tech",k:"A",label:"Technical knowledge"},{id:"detail",k:"B",label:"Attention to detail"},{id:"integrity",k:"C",label:"Integrity under pressure"},{id:"comms",k:"D",label:"Clear communication"},{id:"data",k:"E",label:"Data & digital skills"}],
+    explain:"All five matter. Technical skills get you the interview. Judgement, integrity and ownership get you the second promotion.",
+    notes:["Compare students vs faculty on the reveal (orange = faculty).", "Give your honest hiring view. What makes you say yes in an interview?"]},
+  {key:"career", kind:"career", time:"11:12", eyebrow:"Career matcher", title:"What kind of work energises you?",
+    phone:"Pick one. You'll get roles in TIC and supply chain that fit.",
+    notes:["Students see personal role suggestions on their phone.", "Ask 2 students to read theirs out. Say which roles hire graduates in the region."]},
+  {key:"faculty", kind:"poll", time:"11:16", eyebrow:"Faculty corner", title:"Which industry exercise should HCT run next semester?",
+    options:[{id:"file",k:"A",label:"Conformity file challenge: spot the mismatches"},{id:"flow",k:"B",label:"Map the cargo flow and the document flow"},{id:"role",k:"C",label:"Role-play: maker, lab, regulator, importer"},{id:"change",k:"D",label:"Regulation-change drill"},{id:"tower",k:"E",label:"Build a compliance control-tower dashboard"}],
+    explain:"Each of these takes one class session and uses no special software. I'm happy to share material for the winning one.",
+    notes:["Students and faculty vote. The reveal shows both (orange = faculty).", "Offer to share a case pack for the winning exercise. This builds the partnership."]},
+  {key:"qa", kind:"qa", time:"11:19", eyebrow:"Your questions", title:"Ask me anything",
+    phone:"Ask a question or upvote one you like.",
+    notes:["Take the top-voted questions first. Mark each one answered from this console."]},
+  {key:"close", kind:"close", time:"11:25", eyebrow:"Final whistle", title:"Thank you, HCT",
+    notes:["Announce the top 3 and the winning team and campus.", "Read the closing statement: 'The supply-chain professional of the future won't just move goods faster. They'll move them safely, compliantly and intelligently.'", "Point to the LinkedIn QR. Ask them to fill in the 30-second exit ticket on their phone."]}
+];
+
+/* ===================================================================== */
+const sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey, {auth:{persistSession:false}, realtime:{params:{eventsPerSecond:5}}});
+const VIEW = ({screen:"screen", console:"console"})[location.hash.replace("#","")] || "phone";
+const AUDIENCE_URL = location.origin + location.pathname;
+const app = document.getElementById("app");
+let STATE = {stage:"welcome", reveal:false, timer_started_at:null, timer_ends_at:null, updated_at:null, run:1};
+let skew = 0;
+let STATS = null;
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = (sel, root=document) => root.querySelector(sel);
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+async function rpc(fn, args){
+  const {data, error} = await sb.rpc(fn, args);
+  if (error) throw new Error(error.message || "request_failed");
+  return data;
+}
+const stageOf = key => STAGES.find(s => s.key === key) || STAGES[0];
+const idxOf = key => Math.max(0, STAGES.findIndex(s => s.key === key));
+const now = () => Date.now() + skew;
+function remaining(){
+  if (!STATE.timer_ends_at) return null;
+  return Math.max(0, (new Date(STATE.timer_ends_at).getTime() - now())/1000);
+}
+function toast(msg){
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; t.setAttribute("role","status");
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+}
+function qr(el, text, size){
+  el.innerHTML = "";
+  try { new QRCode(el, {text, width:size, height:size, colorDark:"#000087", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M}); }
+  catch(e){ el.textContent = "QR unavailable"; }
+}
+const linkedinReady = () => !/REPLACE/.test(CONFIG.speaker.linkedin);
+
+/* ---------- state sync ---------- */
+let listeners = [];
+function applyState(s, fresh){
+  if (!s) return;
+  if (fresh && s.updated_at){ const d = new Date(s.updated_at).getTime() - Date.now(); if (Math.abs(d) < 5*60*1000) skew = d; }
+  const prev = STATE; STATE = s;
+  listeners.forEach(fn => fn(prev, s));
+}
+async function fetchState(){
+  const {data} = await sb.from("session_state").select("*").eq("id",1).maybeSingle();
+  if (data && (data.updated_at !== STATE.updated_at || data.run !== STATE.run)) applyState(data, false);
+}
+sb.channel("state").on("postgres_changes", {event:"UPDATE", schema:"public", table:"session_state"}, p => applyState(p.new, true)).subscribe();
+setInterval(fetchState, VIEW === "phone" ? 5000 : 3000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) fetchState(); });
+
+/* ---------- presenter auth ---------- */
+let PIN = store.get("kp_pin");
+function askPin(){
+  return new Promise(resolve => {
+    const m = document.createElement("div"); m.className = "modal";
+    m.innerHTML = `<form><span class="eyebrow">Presenter</span><label for="pin-in">Enter your presenter PIN</label><input id="pin-in" autocomplete="off" maxlength="12" required><button class="btn" type="submit">Unlock controls</button><button class="btn ghost" type="button" data-x>Cancel</button><p class="small" id="pin-err" role="alert"></p></form>`;
+    document.body.appendChild(m);
+    const inp = $("#pin-in", m); inp.focus();
+    $("[data-x]", m).onclick = () => { m.remove(); resolve(false); };
+    $("form", m).onsubmit = async e => {
+      e.preventDefault();
+      try { await rpc("presenter_check", {p_pin: inp.value.trim().toUpperCase()}); PIN = inp.value.trim().toUpperCase(); store.set("kp_pin", PIN); m.remove(); resolve(true); }
+      catch(err){ $("#pin-err", m).textContent = "That PIN didn't work. Check it and try again."; }
+    };
+  });
+}
+async function ensurePin(){ return PIN ? true : askPin(); }
+async function setStage(key, reveal=false, timer=null){
+  if (!(await ensurePin())) return;
+  try { const s = await rpc("presenter_set", {p_pin:PIN, p_stage:key, p_reveal:reveal, p_timer_s:timer}); applyState(s, true); }
+  catch(e){ if (/wrong_pin/.test(e.message)){ PIN = null; store.del("kp_pin"); toast("PIN rejected. Enter it again."); } else toast("Couldn't update the session. Check the connection."); }
+}
+function goTo(i){
+  const s = STAGES[Math.min(STAGES.length-1, Math.max(0,i))];
+  const timer = s.kind === "quiz" ? s.duration : s.kind === "team" ? 480 : null;
+  setStage(s.key, false, timer);
+}
+const next = () => goTo(idxOf(STATE.stage) + 1);
+const prev = () => goTo(idxOf(STATE.stage) - 1);
+const toggleReveal = () => setStage(STATE.stage, !STATE.reveal, null);
+const restartTimer = () => { const s = stageOf(STATE.stage); setStage(s.key, false, s.kind === "team" ? 480 : (s.duration || 60)); };
+
+/* =====================================================================
+   SCREEN VIEW
+   ===================================================================== */
+function bootScreen(){
+  app.innerHTML = `<div id="screen" class="grid-bg"><main class="stage" id="stage" aria-live="polite"></main>
+    <div class="timer" id="timer" hidden><svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="4"/><circle id="ringfg" cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="94.25" stroke-dashoffset="0" transform="rotate(-90 18 18)"/></svg><span id="tval">0</span></div>
+    <div class="ctrl" id="ctrl"><button data-a="prev">← Back</button><button data-a="reveal">Reveal</button><button data-a="timer">Timer</button><button data-a="next">Next →</button><button data-a="full">Full screen</button></div>
+    <footer class="rail"><span class="brand">${esc(CONFIG.host)} <b>×</b> COTECNA</span><div class="dots" id="dots"></div>
+      <div class="joinmini"><div><div class="small">Join on your phone</div><div><span class="count" id="pcount">0</span> <span class="small">in the room</span></div></div><div class="qr" id="miniqr"></div></div></footer></div>`;
+  qr($("#miniqr"), AUDIENCE_URL, 120);
+  $("#ctrl").onclick = e => {
+    const a = e.target.closest("button")?.dataset.a; if (!a) return;
+    if (a==="next") next(); if (a==="prev") prev(); if (a==="reveal") toggleReveal(); if (a==="timer") restartTimer();
+    if (a==="full") document.documentElement.requestFullscreen?.().catch(()=>{});
+  };
+  document.addEventListener("keydown", e => {
+    if (e.target.closest("input,textarea")) return;
+    if (["ArrowRight","PageDown"].includes(e.key)) { e.preventDefault(); next(); }
+    if (["ArrowLeft","PageUp"].includes(e.key)) { e.preventDefault(); prev(); }
+    if (e.key===" " || e.key.toLowerCase()==="r") { e.preventDefault(); toggleReveal(); }
+    if (e.key.toLowerCase()==="t") restartTimer();
+    if (e.key.toLowerCase()==="f") document.documentElement.requestFullscreen?.().catch(()=>{});
+  });
+  listeners.push((p, s) => { if (p.stage !== s.stage || p.reveal !== s.reveal || p.run !== s.run || p.timer_ends_at !== s.timer_ends_at) renderScreen(p.stage !== s.stage); });
+  renderScreen(true);
+  pollStats();
+  timerLoop();
+}
+
+let autoRevealed = "";
+function timerLoop(){
+  const el = $("#timer"); if (!el) return;
+  const r = remaining(); const s = stageOf(STATE.stage);
+  if (r === null || STATE.reveal){ el.hidden = true; }
+  else {
+    el.hidden = false; $("#tval").textContent = r > 60 ? `${Math.floor(r/60)}:${String(Math.ceil(r%60)).padStart(2,"0")}` : Math.ceil(r);
+    const total = s.kind === "team" ? 480 : (s.duration || 20);
+    $("#ringfg").setAttribute("stroke-dashoffset", String(94.25 * (1 - r/total)));
+    el.classList.toggle("low", r <= 5);
+    if (r === 0 && s.kind === "quiz" && PIN && autoRevealed !== STATE.stage + STATE.timer_ends_at){
+      autoRevealed = STATE.stage + STATE.timer_ends_at; setTimeout(() => setStage(STATE.stage, true, null), 1800);
+    }
+  }
+  requestAnimationFrame(timerLoop);
+}
+
+async function pollStats(){
+  try {
+    const s = stageOf(STATE.stage);
+    STATS = await rpc("get_stats", {p_activity: s.activity || s.key});
+    if (s.kind === "twist") STATS.gut = await rpc("get_stats", {p_activity:"gut"});
+    updateScreen();
+  } catch(e){}
+  setTimeout(pollStats, 1500);
+}
+
+function dotsHTML(){
+  const i = idxOf(STATE.stage);
+  return STAGES.map((s, j) => `<i class="${j<i?"on":""} ${j===i?"now":""}" title="${esc(s.time)} ${esc(s.title)}"></i>`).join("");
+}
+function head(s, extra=""){
+  return `<div class="s-head"><span class="eyebrow">${esc(s.time)} · ${esc(s.eyebrow)}</span><h1 class="s-title">${esc(s.title)}</h1>${extra}</div>`;
+}
+function barsHTML(s){
+  return `<div class="bars" id="bars">${s.options.map(o => `<div class="bar" data-id="${o.id}"><span class="key">${esc(o.k)}</span><div class="track"><div class="fill"></div><div class="split"></div><div class="lbl">${esc(o.label)}</div></div><span class="n">0</span></div>`).join("")}</div>`;
+}
+function stampFor(id){
+  if (id==="release") return `<span class="stamp pass anim">Release</span>`;
+  if (id==="hold") return `<span class="stamp hold anim">Hold</span>`;
+  if (id==="escalate") return `<span class="stamp esc anim">Escalate</span>`;
+  return `<span class="stamp pass anim">Correct</span>`;
+}
+
+function renderScreen(stageChanged){
+  const s = stageOf(STATE.stage); const st = $("#stage");
+  $("#dots").innerHTML = dotsHTML();
+  let h = "";
+  switch (s.kind){
+    case "lobby":
+      h = `<div class="lobby"><div class="s-head"><span class="eyebrow">${esc(CONFIG.event)} · ${esc(CONFIG.host)}</span>
+          <h1 class="s-title xl">${esc(s.title)}</h1><p class="s-sub">${esc(s.sub)}</p>
+          <p class="s-sub">with <b style="color:var(--ink)">${esc(CONFIG.speaker.name)}</b>, ${esc(CONFIG.speaker.title)}</p>
+          <div class="campus-pair" id="campuses"></div><div class="names" id="names"></div></div>
+        <div><div class="bigqr" id="bigqr"></div><div class="joinurl">Scan to join · no app, no sign-up</div></div></div>`;
+      break;
+    case "cloud":
+      h = head(s, `<span class="answered-count" id="resp"></span>`) + `<div class="cloud" id="cloud"></div>`;
+      break;
+    case "quiz": case "poll":
+      h = head(s, `<span class="answered-count" id="resp"></span>${STATE.reveal && (s.key==="skills"||s.key==="faculty") ? ` <span class="answered-count" style="color:var(--orange)">· orange = faculty votes</span>` : ""}`) + barsHTML(s) + (STATE.reveal ? `<div class="explain">${s.correct ? stampFor("x") : ""}<div>${esc(s.explain)}</div></div>` : "")
+        + (s.key==="cheapest" && STATE.reveal ? ladderHTML() : "");
+      break;
+    case "twist":
+      h = head(s) + `<div class="twist"><span class="eyebrow">New information</span><div>${esc(s.twist)}</div></div>` +
+        (STATE.reveal ? `<div class="compare"><div><span class="eyebrow">Before the twist</span><div id="gutbars"></div></div><div><span class="eyebrow">After the twist</span>${barsHTML(s)}</div></div><div class="explain">${stampFor("hold")}<div>${esc(s.explain)}</div></div>`
+                      : `<span class="answered-count" id="resp"></span>` + barsHTML(s));
+      break;
+    case "board":
+      h = head(s) + `<div class="board"><div><span class="eyebrow">Top 10</span><div id="leaders"></div></div><div style="display:flex;flex-direction:column;gap:1.4em"><div><span class="eyebrow">Team race</span><div id="teambars"></div></div><div><span class="eyebrow">Campus battle · average points</span><div id="campusbars"></div></div></div></div>`;
+      break;
+    case "case":
+      h = head(s) + `<div class="casefile"><div class="doc"><span class="clip">URGENT · 5 DAYS</span><h3>Shipment file · electric kettles</h3><table>
+        <tr><td>Importer</td><td>UAE retailer, national promotion launch</td></tr>
+        <tr><td>Quantity</td><td class="mono">5,000 units</td></tr>
+        <tr><td>Vessel departs</td><td>In 5 days</td></tr>
+        <tr><td>Test report model</td><td class="mono">KT-200</td></tr>
+        <tr><td>Shipping docs model</td><td class="mono"><span class="flag">KT-200A</span></td></tr>
+        <tr><td>Product label</td><td><span class="flag">Doesn't exactly match the technical file</span></td></tr>
+        <tr><td>Client says</td><td>"Identical except the colour. Approve today."</td></tr>
+        <tr><td>Retailer says</td><td>Penalties if the launch slips</td></tr></table></div>
+        <div><span class="eyebrow">Five teams · check your phone</span><div class="teams5" id="teams5">${[1,2,3,4,5].map(t => `<div class="teamrow"><span class="sw" style="background:${TEAMS[t].color}"></span><div><b>${TEAMS[t].name}</b><small>${esc(TEAMS[t].goal)}</small></div><span class="mono" data-tn="${t}">0</span></div>`).join("")}</div></div></div>`;
+      break;
+    case "team":
+      h = head(s, `<span class="answered-count" id="resp"></span>`) + `<div class="cols" style="--n:4">${s.questions.map((q,i)=>`<div class="card"><span class="tag">Q${i+1}</span><h3>${esc(q)}</h3></div>`).join("")}</div>
+        <div class="teams5" id="teamsub" style="grid-template-columns:repeat(5,1fr)">${[1,2,3,4,5].map(t => `<div class="teamrow"><span class="sw" style="background:${TEAMS[t].color}"></span><div><b>${TEAMS[t].name}</b><small>${esc(TEAMS[t].role)}</small></div><span class="mono" data-ts="${t}">0</span></div>`).join("")}</div>`;
+      break;
+    case "debrief":
+      h = head(s) + `<div class="plans" id="plans"></div><div class="framework">${["Define the mismatch","Judge if it's material","Ask for objective evidence","Choose a compliant option","Record the decision"].map((f,i)=>`<span><b>${i+1}</b>${esc(f)}</span>`).join("")}</div>
+        <p class="keymsg">The best answer is the fastest decision that stays technically justified, traceable and compliant.</p>`;
+      break;
+    case "career":
+      h = head(s, `<span class="answered-count" id="resp"></span>`) + `<div class="bars" id="bars">${Object.entries(CAREER).map(([id,c]) => `<div class="bar" data-id="${id}"><span class="key">${id[0].toUpperCase()}</span><div class="track"><div class="fill"></div><div class="lbl">${esc(c.label)} → <span style="color:var(--muted)">${esc(c.roles.join(" · "))}</span></div></div><span class="n">0</span></div>`).join("")}</div>`;
+      break;
+    case "qa":
+      h = head(s, `<span class="answered-count">Ask from your phone · tap ▲ to upvote</span>`) + `<div class="qwall" id="qwall"></div>`;
+      break;
+    case "close":
+      h = `<div class="s-head"><span class="eyebrow">${esc(s.time)} · ${esc(s.eyebrow)}</span><h1 class="s-title">${esc(s.title)}</h1></div>
+        <div class="board"><div style="display:flex;flex-direction:column;gap:1.4em"><div class="podium" id="podium"></div><div id="winners" class="framework"></div></div>
+        <div class="connect"><div class="qr" id="liqr"></div><div><span class="eyebrow" style="color:#4a5190">Stay connected · ${esc(CONFIG.speaker.name)}</span><h3>Let's keep the conversation going</h3><p>${esc(CONFIG.speaker.closingLine)}</p></div></div></div>`;
+      break;
+    default:
+      h = slideHTML(s);
+  }
+  if (stageChanged || s.kind !== "lobby") st.innerHTML = h;
+  if (s.kind === "lobby" && $("#bigqr") && !$("#bigqr").childElementCount) qr($("#bigqr"), AUDIENCE_URL, 360);
+  if (s.kind === "close") linkedinReady() ? qr($("#liqr"), CONFIG.speaker.linkedin, 240) : ($("#liqr").innerHTML = `<p style="padding:1em;font-size:.8em">Add your LinkedIn URL in CONFIG</p>`);
+  updateScreen();
+}
+
+function ladderHTML(){
+  const steps = [["Design","revise the spec"],["Factory","rework or relabel"],["Pre-shipment","hold and correct"],["Port","storage, delay, escalation"],["Shelf","recall and reputation"]];
+  return `<div class="ladder">${steps.map((x,i)=>`<div style="height:${18+i*20}%">${x[0]}<small>${x[1]}</small></div>`).join("")}</div>`;
+}
+
+function slideHTML(s){
+  const sp = CONFIG.speaker;
+  if (s.key === "me") return head(s) + `<div class="cols" style="--n:2;flex:1;min-height:0">
+      <div class="card"><span class="tag">${esc(sp.title)}</span><h3 style="font-size:2.6em">${esc(sp.name)}</h3><dl class="kv">${sp.facts.map(f=>`<dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd>`).join("")}</dl></div>
+      <div class="card"><span class="tag">Three things I wish I'd known at your age</span>${sp.lessons.map((l,i)=>`<div><h3><span class="mono" style="color:var(--green);font-size:.7em">0${i+1}</span> ${esc(l[0])}</h3><p>${esc(l[1])}</p></div>`).join("")}</div></div>`;
+  if (s.key === "flows") return head(s) + `<div style="display:flex;flex-direction:column;gap:1.3em">
+      <div class="lane"><h4>Physical</h4><div class="chain">${["Raw material","Factory","Warehouse","Port","Importer","Shop shelf"].map(x=>`<span>${x}</span>`).join("<i>→</i>")}</div></div>
+      <div class="lane"><h4 style="color:var(--sky)">Information</h4><div class="chain">${["Specification","Test report","Inspection report","Certificate","Customs declaration"].map(x=>`<span>${x}</span>`).join("<i>→</i>")}</div></div>
+      <div class="lane"><h4 style="color:var(--orange)">Decision</h4><div class="chain">${["Accept","Test","Inspect","Correct","Certify","Release or hold"].map(x=>`<span>${x}</span>`).join("<i>→</i>")}</div></div></div>
+      <p class="keymsg">Products move physically. Supply chains succeed or fail on information and decisions.</p>`;
+  if (s.key === "tic") return head(s) + `<div class="cols">
+      <div class="card"><span class="tag">T · ISO/IEC 17025</span><h3>Testing</h3><dl class="kv"><dt>Does</dt><dd>Measures a characteristic or performance</dd><dt>Who</dt><dd>A laboratory</dd><dt>Output</dt><dd>Test report</dd><dt>Example</dt><dd>Electrical safety of a kettle</dd></dl></div>
+      <div class="card"><span class="tag">I · ISO/IEC 17020</span><h3>Inspection</h3><dl class="kv"><dt>Does</dt><dd>Examines a product, shipment or condition</dd><dt>Who</dt><dd>An inspector on site</dd><dt>Output</dt><dd>Inspection report</dd><dt>Example</dt><dd>Quantity, packing, labels, sampling, loading</dd></dl></div>
+      <div class="card"><span class="tag">C · ISO/IEC 17065</span><h3>Certification</h3><dl class="kv"><dt>Does</dt><dd>Formally attests that requirements are met</dd><dt>Who</dt><dd>A certification body</dd><dt>Output</dt><dd>Certificate or conformity decision</dd><dt>Example</dt><dd>Approving a model for the UAE market</dd></dl></div></div>
+      <div class="framework"><span>Seller wants it shipped</span><span>Buyer wants the right product</span><span>Regulator wants the public protected</span><span style="background:rgba(237,136,79,.18);border-color:var(--orange)">TIC decides on evidence, never on pressure</span></div>`;
+  if (s.key === "ecosystem") return head(s) + `<div class="cols" style="--n:3">
+      <div class="card"><span class="tag">Trade</span><h3>Moves the goods</h3><div class="chips" style="--x:0">${["Manufacturer","Exporter","Freight forwarder","Importer","Distributor & retailer","Consumer"].map(x=>`<span style="border-color:var(--line);color:var(--ink)">${x}</span>`).join("")}</div></div>
+      <div class="card"><span class="tag">Assurance</span><h3>Creates the evidence</h3><div class="chips">${["Laboratory","Inspection body","Certification body","Accreditation body"].map(x=>`<span style="border-color:rgba(0,186,128,.6);color:#bff3df">${x}</span>`).join("")}</div><p>Accredited to ISO/IEC 17025, 17020 and 17065</p></div>
+      <div class="card"><span class="tag">Authority</span><h3>Sets and enforces the rules</h3><div class="chips">${["Ministry / regulator","Customs"].map(x=>`<span>${x}</span>`).join("")}</div><p>In the UAE, MoIAT sets technical regulations and grants national conformity marks such as the Emirates Quality Mark. Across the GCC, routes differ, for example SABER in Saudi Arabia.</p></div></div>
+      <p class="keymsg">Teach compliance as an upstream design requirement, not a customs form at the end.</p>`;
+  if (s.key === "journey") return head(s) + `<div class="steps">${[["Design","product designed"],["Rules","regulation identified"],["Evidence plan","standards & evidence set"],["Test","product tested"],["File","technical file reviewed"],["Inspect","factory or shipment checked"],["Decide","conformity decision"],["Ship & clear","customs clearance"],["Market","on the shelf"]].map((x,i)=>`<div class="step"><b>${String(i+1).padStart(2,"0")}</b><strong>${x[0]}</strong><small>${x[1]}</small></div>`).join("")}</div>
+      <div><span class="eyebrow" style="color:var(--orange)">If the cargo arrives before its evidence</span><div class="chips" style="margin-top:.6em">${["Storage & demurrage","Re-testing","Delayed launch","Repacking or relabelling","Shipment hold","Unhappy customer"].map(x=>`<span>${x}</span>`).join("")}</div></div>`;
+  if (s.key === "story") return head(s) + `<div class="cols" style="--n:4">
+      <div class="card"><span class="tag">Situation</span><h3>Time-sensitive cargo needs inspection</h3><p>Loading is fixed. The customer needs the report.</p></div>
+      <div class="card"><span class="tag">Complication</span><h3>The schedule moves, access is uncertain</h3><p>Safety, sample integrity, inspector availability and the contract all pull in different directions.</p></div>
+      <div class="card"><span class="tag">Response</span><h3>Follow the protocol</h3><p>Reassess safety, call the customer, validate the new inspection point, keep traceability, document every deviation.</p></div>
+      <div class="card" style="border-color:var(--green)"><span class="tag">Learning</span><h3>Resilience needs a decision protocol</h3><p>Not individual heroics.</p></div></div>
+      <p class="keymsg">Use Situation, Complication, Response, Learning in your next interview answer.</p>`;
+  return head(s);
+}
+
+function setBars(answers, opts={}, box=$("#bars")){
+  if (!box) return;
+  const map = {}; let max = 0, total = 0;
+  (answers||[]).forEach(a => { map[a.answer] = a; total += a.n; });
+  box.querySelectorAll(".bar").forEach(b => { const a = map[b.dataset.id]; max = Math.max(max, a ? a.n : 0); });
+  box.querySelectorAll(".bar").forEach(b => {
+    const a = map[b.dataset.id] || {n:0, faculty:0};
+    const show = opts.show !== false;
+    b.querySelector(".fill").style.width = show && total ? `${(a.n/Math.max(total,1))*100}%` : "0%";
+    const sp = b.querySelector(".split"); if (sp) sp.style.width = show && total && opts.split ? `${(a.faculty/Math.max(total,1))*100}%` : "0%";
+    b.querySelector(".n").textContent = show ? (total ? Math.round(a.n/total*100) + "%" : "0%") : "·";
+    b.classList.toggle("correct", !!opts.correct && b.dataset.id === opts.correct);
+    b.classList.toggle("dim", !!opts.correct && b.dataset.id !== opts.correct);
+  });
+}
+
+function updateScreen(){
+  if (!STATS) return;
+  const s = stageOf(STATE.stage);
+  $("#pcount") && ($("#pcount").textContent = STATS.participants);
+  const resp = $("#resp"); if (resp) resp.textContent = `${STATS.responded} of ${STATS.participants} answered`;
+  if (s.kind === "lobby"){
+    const c = STATS.by_campus || {};
+    $("#campuses").innerHTML = `<div><b>${c["Sharjah"]||0}</b><span class="eyebrow">Sharjah</span></div><div><b>${c["Abu Dhabi"]||0}</b><span class="eyebrow">Abu Dhabi</span></div><div><b>${STATS.participants}</b><span class="eyebrow">Total</span></div>`;
+    $("#names").innerHTML = STATS.names.map(n => `<span class="name">${esc(n)}</span>`).join("");
+  }
+  if (s.kind === "quiz") setBars(STATS.answers, {show: STATE.reveal, correct: STATE.reveal ? s.correct : null});
+  if (s.kind === "poll") setBars(STATS.answers, {show: true, split: STATE.reveal && (s.key==="skills"||s.key==="faculty")});
+  if (s.kind === "twist"){
+    setBars(STATS.answers, {show:true});
+    const g = $("#gutbars");
+    if (STATE.reveal && STATS.gut && g){
+      if (!g.childElementCount) g.innerHTML = barsHTML(s).replace('id="bars"','id="gutb"');
+      setBars(STATS.gut.answers, {show:true}, $("#gutb"));
+    }
+  }
+  if (s.kind === "career") setBars(STATS.answers, {show:true});
+  if (s.kind === "cloud"){
+    const words = STATS.answers.slice(0,50); const max = Math.max(1, ...words.map(w=>w.n));
+    const order = [...words].sort((a,b) => (a.answer > b.answer ? 1 : -1));
+    const palette = ["var(--ink)","var(--sky)","var(--green)","var(--orange)","#c7a6ff"];
+    $("#cloud").innerHTML = order.map((w,i) => `<span style="font-size:${1.4 + 4.6*(w.n/max)}em;color:${palette[i%palette.length]}">${esc(w.answer)}</span>`).join("") || `<p class="s-sub">Words appear here as people answer.</p>`;
+  }
+  if (s.kind === "board"){
+    $("#leaders").innerHTML = STATS.leaders.map((l,i) => `<div class="lead"><span class="r">${i+1}</span><span class="who">${esc(l.name)}<small>${esc(TEAMS[l.team].name)} · ${esc(l.campus)}${l.kind==="faculty"?" · faculty":""}</small></span><span class="p">${l.score.toLocaleString()}</span></div>`).join("") || `<p class="s-sub">No scores yet.</p>`;
+    const tmax = Math.max(1, ...STATS.teams.map(t=>t.score));
+    $("#teambars").innerHTML = `<div class="bars">${STATS.teams.map(t => `<div class="bar" style="grid-template-columns:7em 1fr 5em"><span style="font:800 1.1em var(--display);color:${TEAMS[t.team].color}">${TEAMS[t.team].name}</span><div class="track" style="height:2.2em"><div class="fill" style="width:${t.score/tmax*100}%;background:${TEAMS[t.team].color}"></div></div><span class="n">${t.score.toLocaleString()}</span></div>`).join("")}</div>`;
+    const cmax = Math.max(1, ...STATS.campus.map(c=>c.avg));
+    $("#campusbars").innerHTML = `<div class="bars">${STATS.campus.map(c => `<div class="bar" style="grid-template-columns:7em 1fr 5em"><span style="font:800 1.1em var(--display)">${esc(c.campus)}</span><div class="track" style="height:2.2em"><div class="fill" style="width:${c.avg/cmax*100}%"></div></div><span class="n">${Number(c.avg).toLocaleString()}</span></div>`).join("")}</div>`;
+  }
+  if (s.kind === "case"){
+    const n = {}; STATS.teams.forEach(t => n[t.team] = t.n);
+    document.querySelectorAll("[data-tn]").forEach(e => e.textContent = `${n[e.dataset.tn]||0} people`);
+  }
+  if (s.kind === "team"){
+    const n = {}; STATS.texts.forEach(t => n[t.team] = (n[t.team]||0) + 1);
+    document.querySelectorAll("[data-ts]").forEach(e => e.textContent = `${n[e.dataset.ts]||0} plans`);
+  }
+  if (s.kind === "debrief"){
+    const by = {1:[],2:[],3:[],4:[],5:[]}; STATS.texts.forEach(t => by[t.team].push(t));
+    $("#plans").innerHTML = [1,2,3,4,5].map(t => `<div class="plan" style="--c:${TEAMS[t].color}"><h4>${TEAMS[t].name}</h4>${by[t].slice(-3).reverse().map(p => `<q>${esc(p.answer)}<small>${esc(p.name)} · ${esc(p.campus)}</small></q>`).join("") || `<p class="small">No plan submitted</p>`}</div>`).join("");
+  }
+  if (s.kind === "close"){
+    const L = STATS.leaders; const order = [1,0,2];
+    $("#podium").innerHTML = order.map(i => L[i] ? `<div style="height:${[100,78,62][i]}%"><span class="pl">${i+1}</span><b>${esc(L[i].name)}</b><span class="small">${L[i].score.toLocaleString()} pts</span></div>` : "").join("");
+    const tw = [...STATS.teams].sort((a,b)=>b.score-a.score)[0]; const cw = [...STATS.campus].sort((a,b)=>b.avg-a.avg)[0];
+    $("#winners").innerHTML = (tw && tw.score ? `<span><b>Team</b>${esc(TEAMS[tw.team].name)}</span>` : "") + (cw ? `<span><b>Campus</b>${esc(cw.campus)}</span>` : "") + `<span><b>Exit ticket</b>on your phone, 30 seconds</span>`;
+  }
+  if (s.kind === "qa") refreshQWall();
+}
+let qwallBusy = false;
+async function refreshQWall(){
+  if (qwallBusy) return; qwallBusy = true;
+  try {
+    const qs = await rpc("list_questions", {p_id:null});
+    $("#qwall") && ($("#qwall").innerHTML = qs.slice(0,7).map(q => `<div class="qitem ${q.answered?"done":""}"><span class="v">▲ ${q.votes}</span><div>${esc(q.body)}<small>${esc(q.who)}${q.campus?" · "+esc(q.campus):""}${q.answered?" · answered":""}</small></div></div>`).join("") || `<p class="s-sub">Questions appear here as people ask them.</p>`);
+  } catch(e){}
+  qwallBusy = false;
+}
+
+/* =====================================================================
+   PHONE VIEW
+   ===================================================================== */
+let ME = store.get("kp_me");     // {id, secret, team, run, name}
+let MEINFO = null;
+let answered = {};
+let lastKey = "";
+
+function bootPhone(){
+  app.innerHTML = `<div id="phone"><div class="ph-top"><span class="brand">HCT <b>×</b> COTECNA · LIVE</span><span class="score-pill" id="pill" hidden></span></div><div id="pmain"></div></div>
+    <div class="dock" id="dock" hidden><button class="btn ghost" id="askbtn">Ask KP a question</button></div>`;
+  $("#askbtn").onclick = openQA;
+  listeners.push((p, s) => {
+    if (ME && s.run !== ME.run){ ME = null; store.del("kp_me"); answered = {}; }
+    renderPhone();
+    if (p.reveal !== s.reveal || p.stage !== s.stage) refreshMe();
+  });
+  fetchState().then(() => { if (ME && STATE.run !== ME.run){ ME = null; store.del("kp_me"); } refreshMe(); renderPhone(true); });
+  renderPhone(true);
+  phoneTimerLoop();
+}
+async function refreshMe(){
+  if (!ME) return;
+  try {
+    MEINFO = await rpc("me", {p_id:ME.id, p_secret:ME.secret});
+    answered = {}; (MEINFO.answered||[]).forEach(a => answered[a.activity] = a);
+    const pill = $("#pill"); pill.hidden = false; pill.textContent = `${MEINFO.score.toLocaleString()} pts · #${MEINFO.rank} of ${MEINFO.total}`;
+    renderPhone(true);
+  } catch(e){
+    if (/unknown_participant/.test(e.message)){ ME = null; store.del("kp_me"); renderPhone(true); }
+  }
+}
+function phoneTimerLoop(){
+  const bar = $("#ptbar i"); const lab = $("#ptlab");
+  if (bar){ const s = stageOf(STATE.stage); const r = remaining(); const tot = s.kind==="team" ? 480 : (s.duration||20);
+    if (r !== null){ bar.style.width = `${(r/tot)*100}%`; if (lab) lab.textContent = r > 60 ? `${Math.floor(r/60)}:${String(Math.ceil(r%60)).padStart(2,"0")} left` : `${Math.ceil(r)}s left`; } }
+  requestAnimationFrame(phoneTimerLoop);
+}
+
+function renderPhone(force){
+  const s = stageOf(STATE.stage);
+  const key = [STATE.stage, STATE.reveal, STATE.timer_ends_at, !!ME, Object.keys(answered).join(",")].join("|");
+  if (!force && key === lastKey) return; lastKey = key;
+  const m = $("#pmain"); if (!m) return;
+  // keep typed drafts when the view re-renders
+  const drafts = {}; m.querySelectorAll("input,textarea").forEach(el => { if (el.id) drafts[el.id] = el.value; });
+  $("#dock").hidden = !ME;
+  if (!ME){ m.innerHTML = joinHTML(); wireJoin(); restore(drafts); return; }
+  const team = TEAMS[ME.team];
+  const badge = `<div class="badge" style="--c:${team.color}"><div><div class="id">INSPECTOR ID · HCT-${ME.id.slice(0,4).toUpperCase()}</div><b>${esc(ME.name)}</b></div><div style="text-align:right"><div class="id">TEAM</div><b style="color:${team.color}">${team.name}</b></div></div>`;
+  let h = "";
+  switch (s.kind){
+    case "lobby":
+      h = `<div class="tagcard"><span class="hole"></span><span class="eyebrow">You're in</span><h1>Welcome to the masterclass</h1><p>Keep this page open. It changes on its own as the session moves on.</p>${badge}<p>You're on team <b style="color:${team.color}">${team.name}</b>. Your team plays a role in the live case later.</p></div>`;
+      break;
+    case "cloud":
+      h = answered.cloud ? waitCard(`You said "${esc(answered.cloud.answer)}". Look for it on the screen.`) :
+        `<div class="tagcard"><span class="eyebrow">${esc(s.eyebrow)}</span><h2>${esc(s.title)}</h2><div class="field"><label for="w">One word</label><input id="w" maxlength="24" autocomplete="off" autocapitalize="none" enterkeyhint="send"></div><button class="btn" id="send">Send</button></div>`;
+      break;
+    case "quiz": case "poll": case "twist": case "career":
+      h = choiceHTML(s); break;
+    case "case":
+      h = `<div class="tagcard paper"><span class="eyebrow" style="color:#4a5190">Your role in the case</span><h1>Team ${team.name}</h1><h2>${esc(team.role)}</h2><p><b>Your objective:</b> ${esc(team.goal)}</p></div>
+        <div class="tagcard"><span class="eyebrow">Case file KT-200A</span><p>5,000 kettles. Vessel leaves in 5 days. Test report says <span class="mono">KT-200</span>, shipping documents say <span class="mono">KT-200A</span>, and the label doesn't match the technical file. The client wants approval today.</p></div>`;
+      break;
+    case "team":
+      h = teamHTML(s, team); break;
+    case "board":
+      h = `<div class="tagcard"><span class="eyebrow">Half-time</span><h1>${MEINFO ? `#${MEINFO.rank} of ${MEINFO.total}` : "Scoreboard"}</h1><p>${MEINFO ? `${MEINFO.score.toLocaleString()} points so far. Team ${team.name} needs you in the case.` : "Your score is on its way."}</p>${badge}</div>`;
+      break;
+    case "debrief":
+      h = waitCard(answered.case_team ? `Your plan: "${esc(answered.case_team.answer)}"` : s.phone); break;
+    case "qa":
+      h = `<div class="tagcard"><span class="eyebrow">Q&A</span><h2>Ask or upvote</h2><p>The most-upvoted questions get answered first.</p><button class="btn" id="openqa">Open questions</button></div>`;
+      break;
+    case "close":
+      h = closeHTML(team); break;
+    default:
+      h = waitCard(s.phone || "Eyes on the screen.", s);
+  }
+  m.innerHTML = h;
+  restore(drafts);
+  wirePhone(s);
+}
+function restore(d){ Object.entries(d).forEach(([id,v]) => { const el = document.getElementById(id); if (el && !el.value) el.value = v; }); }
+function waitCard(text, s){
+  return `<div class="tagcard"><span class="hole"></span><span class="eyebrow">${s ? esc(s.time)+" · "+esc(s.eyebrow) : "Eyes on the screen"}</span><h2>${s ? esc(s.title) : "Look at the screen"}</h2><p>${text}</p></div>`;
+}
+function joinHTML(){
+  return `<div class="tagcard"><span class="hole"></span><span class="eyebrow">${esc(CONFIG.event)}</span><h1>From Factory to Market</h1><p>Join in 10 seconds. You'll vote, compete for points and play a role in a live case with ${esc(CONFIG.speaker.name)}.</p>
+    <div class="field"><label for="jn">Your first name</label><input id="jn" maxlength="24" autocomplete="given-name" required></div>
+    <div class="field"><label>Your campus</label><div class="seg" style="--n:2" id="jc"><button type="button" data-v="Sharjah" aria-pressed="false">Sharjah</button><button type="button" data-v="Abu Dhabi" aria-pressed="false">Abu Dhabi</button></div></div>
+    <div class="field"><label>I am</label><div class="seg" style="--n:2" id="jk"><button type="button" data-v="student" aria-pressed="true">A student</button><button type="button" data-v="faculty" aria-pressed="false">Faculty</button></div></div>
+    <button class="btn" id="jgo">Join the session</button><p class="small" id="jerr" role="alert"></p></div>`;
+}
+function segVal(id){ return $(`#${id} [aria-pressed="true"]`)?.dataset.v; }
+function wireSeg(id){ $(`#${id}`).onclick = e => { const b = e.target.closest("button"); if (!b) return; $(`#${id}`).querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }; }
+function wireJoin(){
+  wireSeg("jc"); wireSeg("jk");
+  $("#jgo").onclick = async () => {
+    const name = $("#jn").value.trim(), campus = segVal("jc"), kind = segVal("jk");
+    if (!name) return $("#jerr").textContent = "Add your first name.";
+    if (!campus) return $("#jerr").textContent = "Choose your campus.";
+    $("#jgo").disabled = true;
+    try {
+      const r = await rpc("join_session", {p_name:name, p_campus:campus, p_kind:kind});
+      ME = {id:r.id, secret:r.secret, team:r.team, run:r.run ?? STATE.run, name}; store.set("kp_me", ME);
+      await refreshMe(); renderPhone(true);
+    } catch(e){ $("#jerr").textContent = "Couldn't join. Check your connection and try again."; $("#jgo").disabled = false; }
+  };
+}
+function choiceHTML(s){
+  const act = s.key; const mine = answered[act]?.answer;
+  const opts = s.kind === "career" ? Object.entries(CAREER).map(([id,c]) => ({id, k:id[0].toUpperCase(), label:c.label})) : s.options;
+  const isQuiz = s.kind === "quiz"; const r = remaining();
+  const locked = !!mine || STATE.reveal || (isQuiz && (r === null || r === 0));
+  let status = "";
+  if (isQuiz && r === null && !STATE.reveal) status = `<p>Get ready. The question opens when the timer starts.</p>`;
+  if (mine && !STATE.reveal) status = `<p><b>Locked in.</b> ${isQuiz ? "Wait for the reveal." : "Watch the results on the screen."}</p>`;
+  if (STATE.reveal && isQuiz){
+    const a = answered[act];
+    status = a ? (a.points > 0 ? `<div class="result"><span class="stamp pass anim" style="font-size:14px">Correct</span><span class="pts">+${a.points}</span></div>` : `<div class="result"><span class="stamp hold anim" style="font-size:14px">Not this time</span></div>`) : `<p>Time ran out on this one.</p>`;
+    status += `<p>${esc(s.explain)}</p>`;
+  } else if (STATE.reveal && s.explain) status += `<p>${esc(s.explain)}</p>`;
+  const twist = s.kind === "twist" ? `<div class="tagcard" style="background:var(--orange);color:#2b1205;border:0"><span class="eyebrow" style="color:#2b1205">Plot twist</span><p style="color:#2b1205;font-weight:600">${esc(s.twist)}</p></div>` : "";
+  const career = s.kind === "career" && mine ? `<div class="tagcard paper"><span class="eyebrow" style="color:#4a5190">Roles that fit you</span><div class="roles">${CAREER[mine].roles.map(r => `<span style="background:#fff;color:#151a52">${esc(r)}</span>`).join("")}</div><p>Look these titles up on LinkedIn and see who in the UAE does them today.</p></div>` : "";
+  return `${twist}<div class="tagcard"><span class="eyebrow">${esc(s.eyebrow)}</span><h2>${esc(s.q ? s.title : s.title)}</h2>${s.q ? `<p>${esc(s.q)}</p>` : ""}
+    ${isQuiz && !STATE.reveal && r !== null ? `<div class="tbar" id="ptbar"><i></i></div><span class="small" id="ptlab"></span>` : ""}
+    <div class="opts">${opts.map(o => {
+      let cls = ""; if (STATE.reveal && isQuiz){ if (o.id === s.correct) cls = "correct"; else if (o.id === mine) cls = "wrong"; }
+      return `<button class="opt ${cls}" data-v="${o.id}" aria-pressed="${o.id===mine}" ${locked?"disabled":""}><span class="k">${esc(o.k)}</span><span>${esc(o.label)}</span></button>`;
+    }).join("")}</div>${status}</div>${career}`;
+}
+function teamHTML(s, team){
+  const mine = answered.case_team?.answer;
+  if (mine) return `<div class="tagcard"><span class="eyebrow">Plan submitted · +300</span><h2>Nice work, Team ${team.name}</h2><p>"${esc(mine)}"</p><p>Your plan may appear on the screen in the debrief.</p></div>`;
+  return `<div class="tagcard paper"><span class="eyebrow" style="color:#4a5190">You are: ${esc(team.role)}</span><h2>${esc(team.goal)}</h2><ol style="margin:0;padding-left:1.2em">${s.questions.map(q=>`<li>${esc(q)}</li>`).join("")}</ol></div>
+    <div class="tagcard"><div class="tbar" id="ptbar"><i></i></div><span class="small" id="ptlab"></span>
+      <div class="field"><label>Your call</label><div class="seg" style="--n:3" id="tdec"><button type="button" data-v="RELEASE" aria-pressed="false">Release</button><button type="button" data-v="HOLD" aria-pressed="false">Hold</button><button type="button" data-v="ESCALATE" aria-pressed="false">Escalate</button></div></div>
+      <div class="field"><label for="tact">Next action</label><textarea id="tact" maxlength="300" placeholder="e.g. Ask the factory for a model-comparison statement and bill of materials"></textarea></div>
+      <div class="field"><label for="town">Owner and deadline</label><input id="town" maxlength="120" placeholder="e.g. Lab manager, within 24 hours"></div>
+      <button class="btn" id="tsend">Submit team plan</button><p class="small" id="terr" role="alert"></p></div>`;
+}
+function closeHTML(team){
+  const sp = CONFIG.speaker; const learned = answered.close; const rated = answered["close:rating"];
+  const li = linkedinReady() ? `<a class="btn" style="text-align:center;text-decoration:none;display:block" href="${esc(sp.linkedin)}" target="_blank" rel="noopener">Connect with ${esc(sp.short)} on LinkedIn</a>` : "";
+  return `<div class="tagcard"><span class="eyebrow">Final result</span><h1>${MEINFO ? `#${MEINFO.rank} of ${MEINFO.total}` : "Thank you"}</h1><p>${MEINFO ? `${MEINFO.score.toLocaleString()} points for Team ${team.name}.` : ""}</p></div>
+    <div class="tagcard paper"><span class="eyebrow" style="color:#4a5190">Stay connected</span><h2>${esc(sp.name)}</h2><p>${esc(sp.closingLine)}</p>${li}</div>
+    <div class="tagcard"><span class="eyebrow">Exit ticket · 30 seconds · +150 each</span>
+      ${learned ? `<p><b>Thanks.</b> "${esc(learned.answer)}"</p>` : `<div class="field"><label for="xl">One thing you'll remember from today</label><textarea id="xl" maxlength="300"></textarea></div><button class="btn" id="xsend">Send</button>`}
+      ${rated ? `<p>You rated the session ${esc(rated.answer)} out of 5.</p>` : `<div class="field"><label>How useful was this session?</label><div class="seg" style="--n:5" id="xr">${[1,2,3,4,5].map(n=>`<button type="button" data-v="${n}" aria-pressed="false">${n}</button>`).join("")}</div></div>`}
+    </div>`;
+}
+async function submit(activity, answer){
+  try {
+    const r = await rpc("submit_answer", {p_id:ME.id, p_secret:ME.secret, p_activity:activity, p_answer:answer});
+    answered[activity] = {activity, answer, points:r.points};
+    if (navigator.vibrate) navigator.vibrate(30);
+    refreshMe(); renderPhone(true); return true;
+  } catch(e){
+    const m = e.message;
+    toast(/already/.test(m) ? "You've already answered this one." : /closed/.test(m) ? "Too late, this one is closed." : /not_open/.test(m) ? "This question isn't open right now." : "Couldn't send. Try again.");
+    renderPhone(true); return false;
+  }
+}
+function wirePhone(s){
+  $("#openqa") && ($("#openqa").onclick = openQA);
+  if (s.kind === "cloud" && $("#send")){
+    const go = () => { const w = $("#w").value.trim().split(/\s+/)[0]; if (w) submit("cloud", w.toLowerCase()); };
+    $("#send").onclick = go; $("#w").onkeydown = e => { if (e.key === "Enter") go(); };
+  }
+  document.querySelectorAll(".opt:not([disabled])").forEach(b => b.onclick = () => { document.querySelectorAll(".opt").forEach(x => x.disabled = true); b.setAttribute("aria-pressed","true"); submit(s.key, b.dataset.v); });
+  if (s.kind === "team" && $("#tsend")){
+    wireSeg("tdec");
+    $("#tsend").onclick = () => {
+      const d = segVal("tdec"), a = $("#tact").value.trim(), o = $("#town").value.trim();
+      if (!d) return $("#terr").textContent = "Choose release, hold or escalate.";
+      if (!a) return $("#terr").textContent = "Add your next action.";
+      submit("case_team", `${d}: ${a}${o ? " (" + o + ")" : ""}`);
+    };
+  }
+  if (s.kind === "close"){
+    $("#xsend") && ($("#xsend").onclick = () => { const v = $("#xl").value.trim(); if (v) submit("close", v); });
+    $("#xr") && ($("#xr").onclick = e => { const b = e.target.closest("button"); if (b) submit("close:rating", b.dataset.v); });
+  }
+}
+
+/* Q&A sheet */
+let qaTimer = null;
+function openQA(){
+  if (!ME) return;
+  const sh = document.createElement("div"); sh.className = "sheet"; sh.setAttribute("role","dialog"); sh.setAttribute("aria-label","Questions");
+  sh.innerHTML = `<div class="inner"><div class="ph-top"><span class="eyebrow">Ask ${esc(CONFIG.speaker.short)}</span><button class="btn ghost" id="qclose" style="padding:8px 14px">Close</button></div>
+    <div class="tagcard"><div class="field"><label for="qin">Your question</label><textarea id="qin" maxlength="240" placeholder="What would you like to ask?"></textarea></div><button class="btn" id="qsend">Post question</button></div>
+    <div id="qlist" class="opts"></div></div>`;
+  document.body.appendChild(sh);
+  const load = async () => {
+    try {
+      const qs = await rpc("list_questions", {p_id:ME.id});
+      $("#qlist", sh).innerHTML = qs.map(q => `<div class="qrow"><div>${esc(q.body)}<small>${esc(q.who)}${q.answered?" · answered":""}</small></div><button data-q="${q.id}" aria-pressed="${q.voted}" ${q.voted||q.mine?"disabled":""}>▲ ${q.votes}</button></div>`).join("") || `<p class="small">No questions yet. Be the first.</p>`;
+    } catch(e){}
+  };
+  load(); qaTimer = setInterval(load, 5000);
+  $("#qclose", sh).onclick = () => { clearInterval(qaTimer); sh.remove(); };
+  $("#qsend", sh).onclick = async () => {
+    const v = $("#qin", sh).value.trim(); if (v.length < 3) return toast("Write a bit more.");
+    try { await rpc("ask_question", {p_id:ME.id, p_secret:ME.secret, p_body:v}); $("#qin", sh).value = ""; toast("Question posted"); load(); }
+    catch(e){ toast(/too_many/.test(e.message) ? "You've reached the limit of 5 questions." : "Couldn't post. Try again."); }
+  };
+  $("#qlist", sh).onclick = async e => {
+    const b = e.target.closest("button[data-q]"); if (!b) return; b.disabled = true;
+    try { await rpc("vote_question", {p_id:ME.id, p_secret:ME.secret, p_question:Number(b.dataset.q)}); load(); } catch(err){}
+  };
+}
+
+/* =====================================================================
+   CONSOLE VIEW (presenter remote + notes)
+   ===================================================================== */
+function bootConsole(){
+  app.innerHTML = `<div id="console"><div class="ph-top"><span class="brand">PRESENTER CONSOLE</span><span class="score-pill" id="ccount">0 joined</span></div>
+    <div class="c-now"><span class="eyebrow" id="cmeta"></span><h2 id="ctitle"></h2><span class="small" id="cresp"></span></div>
+    <div class="c-btns"><button id="cprev">← Back</button><button id="crev">Reveal</button><button class="next" id="cnext">Next →</button></div>
+    <div class="c-btns" style="grid-template-columns:1fr 1fr"><button id="ctimer">Restart timer</button><a class="btn ghost" style="text-align:center;text-decoration:none;padding:16px 6px" href="#screen" target="_blank" rel="noopener">Open screen view</a></div>
+    <div class="notes" id="cnotes"></div>
+    <details id="cqa"><summary>Questions from the audience</summary><div id="cqlist" class="opts" style="margin-top:10px"></div></details>
+    <details><summary>Run of show (tap to jump)</summary><div class="stagelist" id="clist" style="margin-top:10px"></div></details>
+    <details><summary>Rehearsal tools</summary><p class="small">Start fresh clears participants, scores and questions from view and sends everyone back to the welcome screen. Use it after rehearsing and before the real session.</p>
+      <div class="field"><label for="cconf">Type RESET to confirm</label><input id="cconf" autocomplete="off"></div><button class="btn danger" id="creset" style="margin-top:8px">Start fresh</button>
+      <p class="small" style="margin-top:10px">Forget the PIN on this device: <button class="btn ghost" id="cforget" style="padding:6px 10px;font-size:13px">Forget PIN</button></p></details></div>`;
+  $("#cprev").onclick = prev; $("#cnext").onclick = next; $("#crev").onclick = toggleReveal; $("#ctimer").onclick = restartTimer;
+  $("#cforget").onclick = () => { PIN = null; store.del("kp_pin"); toast("PIN forgotten on this device"); };
+  $("#creset").onclick = async () => {
+    if ($("#cconf").value.trim().toUpperCase() !== "RESET") return toast("Type RESET first");
+    if (!(await ensurePin())) return;
+    try { await rpc("presenter_reset", {p_pin:PIN}); $("#cconf").value = ""; toast("Fresh start. Everyone rejoins."); fetchState(); } catch(e){ toast("Reset failed"); }
+  };
+  $("#clist").innerHTML = STAGES.map((s,i) => `<button data-i="${i}"><span class="t">${esc(s.time)}</span><span>${esc(s.title)}</span><span class="k">${esc(s.kind)}</span></button>`).join("");
+  $("#clist").onclick = e => { const b = e.target.closest("button[data-i]"); if (b) goTo(Number(b.dataset.i)); };
+  $("#cqlist").onclick = async e => {
+    const b = e.target.closest("button[data-a]"); if (!b || !(await ensurePin())) return;
+    try { await rpc("presenter_moderate", {p_pin:PIN, p_question:Number(b.dataset.q), p_hidden:b.dataset.a==="hide", p_answered:b.dataset.a==="done"}); loadCQ(); } catch(err){ toast("Couldn't update"); }
+  };
+  listeners.push(() => renderConsole());
+  renderConsole(); ensurePin();
+  const loop = async () => {
+    try { const s = stageOf(STATE.stage); const st = await rpc("get_stats", {p_activity:s.activity||s.key});
+      $("#ccount").textContent = `${st.participants} joined`; $("#cresp").textContent = `${st.responded} responses on this step`; } catch(e){}
+    if ($("#cqa").open) loadCQ();
+    setTimeout(loop, 3000);
+  };
+  loop();
+}
+async function loadCQ(){
+  try {
+    const qs = await rpc("list_questions", {p_id:null});
+    $("#cqlist").innerHTML = qs.map(q => `<div class="qrow"><div>${esc(q.body)}<small>▲ ${q.votes} · ${esc(q.who)}${q.answered?" · answered":""}</small></div><div style="display:flex;gap:6px"><button data-a="done" data-q="${q.id}">Done</button><button data-a="hide" data-q="${q.id}">Hide</button></div></div>`).join("") || `<p class="small">No questions yet.</p>`;
+  } catch(e){}
+}
+function renderConsole(){
+  const s = stageOf(STATE.stage); const i = idxOf(STATE.stage); const nx = STAGES[i+1];
+  $("#cmeta").textContent = `${s.time} · step ${i+1} of ${STAGES.length} · ${s.kind}${STATE.reveal ? " · revealed" : ""}`;
+  $("#ctitle").textContent = s.title;
+  $("#crev").textContent = STATE.reveal ? "Hide reveal" : "Reveal";
+  $("#cnotes").innerHTML = `<b>Speaker notes</b><ul>${(s.notes||[]).map(n => `<li>${esc(n)}</li>`).join("")}</ul>${nx ? `<p class="small" style="color:#4a5190;margin:.6em 0 0">Next: ${esc(nx.time)} · ${esc(nx.title)}</p>` : ""}`;
+  document.querySelectorAll("#clist button").forEach(b => b.classList.toggle("now", Number(b.dataset.i) === i));
+}
+
+/* ---------- boot ---------- */
+if (VIEW === "screen") bootScreen(); else if (VIEW === "console") bootConsole(); else bootPhone();
+fetchState();
+window.addEventListener("hashchange", () => location.reload());
+</script>
+</body>
+</html>
